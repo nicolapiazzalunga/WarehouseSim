@@ -1,62 +1,61 @@
-# 🏭 WarehouseSim
+# 🏢 WarehouseSim
 
-**WarehouseSim** is a modular, multi-agent warehouse simulation platform designed to test and visualize motion planning, task coordination, and conflict resolution strategies in structured environments.
+**WarehouseSim** is a modular, multi-agent simulation platform for testing motion planning, task assignment, and conflict resolution strategies in structured warehouse environments.
 
 ---
 
 ## 🚀 Features
 
-- ✅ A* planner with space-time reservation tables  
-- 🔌 Planner strategy injection (`A*`, Greedy, CBS-ready)  
-- 🧠 Task assignment with customizable strategies (`random`, `spread`, `high_density`)  
-- ⚠️ Conflict detection & resolution (wait, replan, idle)  
-- 🎥 Animated visualizer with GIF/MP4 export  
-- 🖥️ **Streamlit UI for interactive simulation control**  
-- 🧪 CLI-driven batch mode for benchmarking  
-- 📦 Packaged via `pyproject.toml` for installability  
+- ⬆️ A* planner with space-time reservation tables
+- 🔌 Plug-in strategy architecture (A*, M*, etc.)
+- 🧠 Flexible task assignment: `random`, `spread`, `high_density`
+- ⚠️ Conflict resolution strategies: `wait`, `replan`, `idle`, cooldowns
+- 📹 Streamlit UI for live simulation control and export
+- ⚖️ CLI for headless batch runs and benchmarking
+- 📊 Animated outputs (GIF, MP4) with overlap logging
+- 🌐 PyPI-ready packaging with `pyproject.toml`
 
 ---
 
-## 🧱 Architecture Diagram
+## 🧱 Architecture
 
 ```text
-+-----------------------------+
-|        run.py (CLI)        |
-+-----------------------------+
-             |
-             v
-+-----------------------------+
-|       Simulation Engine     | <-- world.py
-|  - Steps agents each frame  |
-|  - Handles movement logic   |
-+-----------------------------+
-             |
-             v
-+-----------------------------+
-|        Robot Agents         | <-- agents/robot.py
-| - Path + task logic         |
-+-----------------------------+
-             |
-             v
-+-----------------------------+
-|      Core Modules           |
-|                             |
-| + Environment (grid)        |
-| + ReservationTable          |
-| + TaskManager               |
-| + Planner (A*)              |
-+-----------------------------+
-             |
-             v
-+-----------------------------+
-|       Visualizer (sim/)     |
-| - Draws frames + export     |
-+-----------------------------+
++------------------------------+
+|        run.py (CLI)         |
++------------------------------+
+              |
+              v
++------------------------------+
+|      Simulation Engine       |  <-- world.py / world_two_phase.py
+|  - Multi-robot world logic   |
++------------------------------+
+              |
+              v
++------------------------------+
+|         Robot Agents         |  <-- agents/robot.py
+| - Task, state, motion logic  |
++------------------------------+
+              |
+              v
++------------------------------+
+|         Core Modules         |
+| + environment.py             |
+| + task.py                    |
+| + reservation.py             |
+| + conflict_resolver.py       |
+| + planner (A*, M*)           |
++------------------------------+
+              |
+              v
++------------------------------+
+|        visualizer.py         |  <-- sim/
+| - Draw, animate, export      |
++------------------------------+
 ```
 
 ---
 
-## 🧑‍💻 Install (After Cloning)
+## 👨‍💻 Installation
 
 ```bash
 pip install .
@@ -70,71 +69,67 @@ pip install .
 python -m warehouse_sim.sim.run \
   --goal-strategy spread \
   --planner-strategy astar \
-  --num-robots 10 \
-  --export-format both \
-  --world-version two-phase
+  --num-robots 15 \
+  --world-version two-phase \
+  --export-format both
 ```
 
-### 💡 CLI Options
+### 💡 Options
 
-| Flag                | Description                                                  |
-|---------------------|--------------------------------------------------------------|
-| `--goal-strategy`   | `random`, `spread`, `high_density`                           |
-| `--planner-strategy`| `astar`, `greedy`, `mstar` (if implemented)                  |
-| `--num-robots`      | Number of robots to simulate                                 |
-| `--export-format`   | Format to save the output: `gif`, `mp4`, or `both`           |
-| `--world-version`   | World logic engine: `default` (standard) or `two-phase` (atomic intent-based) |
+| Flag                | Description                                        |
+|---------------------|----------------------------------------------------|
+| `--goal-strategy`   | `random`, `spread`, `high_density`                |
+| `--planner-strategy`| `astar`, `mstar` *(when implemented)*             |
+| `--conflict-strategy` | `wait`, `replan`, `idle`, `wait_then_replan`     |
+| `--num-robots`      | Number of robots                                  |
+| `--export-format`   | `gif`, `mp4`, `both`                               |
+| `--world-version`   | `default` (direct) or `two-phase` (intent-based)  |
 
 ---
 
-## 🖥️ Interactive UI
+## 💻 Streamlit App
 
-WarehouseSim includes a Streamlit-powered dashboard for interactive control and visualization of simulations.
-
-### ▶️ Launch it
+Launch the interactive UI:
 
 ```bash
 streamlit run streamlit_app.py
 ```
 
-### Features
-- Adjust number of robots, planner, goal strategy
-- Run simulation in-browser
-- View animated result instantly
-- Download MP4 directly
+### UI Capabilities
+- Adjust simulation params live
+- See animated warehouse runs
+- Download the MP4 output
+- View overlap log sidebar
 
 ---
 
-## 🗂 Project Structure
+## 📂 Project Layout
 
 ```
 warehouse_sim/
-├── core/              # Planning, environment, reservations
-├── sim/               # World logic and visualizer
-├── agents/            # Robot agent class
-├── utils/             # Configuration constants
-├── generate_scaffold.py
+├── agents/               # Robot logic
+├── core/                 # Planning + task infra
+│   ├── planner/          # A* (future: M*, CBS...)
+│   └── strategies/       # Planner selection
+├── sim/                  # World logic + runner
+├── utils/                # Config, logging
+├── streamlit_app.py      # UI dashboard
+├── run.py                # CLI entrypoint
+├── visualizer.py         # Rendering + export
 ```
 
 ---
 
-## 📸 Sample Output
+## 🚜 Roadmap
 
-> ![WarehouseSim Animation](warehouse_sim_output.gif)
-
----
-
-## 📦 Roadmap
-
-- [x] Modular planner injection system  
-- [x] A* planning with reservations  
-- [x] Replanning via ConflictResolver  
-- [x] Streamlit UI  
-- [ ] Add Greedy/CBS/M* planners  
-- [ ] Heatmap + overlap visualization  
-- [ ] Test suite with `pytest`  
-- [ ] Streamlit: per-robot stats + path plotting  
-- [ ] Optional Gym wrapper for RL agents  
+- [x] A* path planner with reservation
+- [x] ConflictResolver with replan/idle/wait
+- [x] Streamlit interface with animation export
+- [ ] Add M*/CBS planner support
+- [ ] Task metrics + path stats
+- [ ] Heatmap + visual debug layers
+- [ ] Unit tests (pytest)
+- [ ] Optional OpenAI Gym interface
 
 ---
 
@@ -145,4 +140,7 @@ MIT License
 ---
 
 ## 👤 Author
-**Nicola Piazzalunga** – [@gmail.com](https://github.com/nicolapiazzalunga)
+
+**Nicola Piazzalunga**  
+[@nicolapiazzalunga](https://github.com/nicolapiazzalunga)
+
