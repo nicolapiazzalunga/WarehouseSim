@@ -1,0 +1,32 @@
+# Bytecode and Python cache
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Editor configs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+*.log
+*.gif
+*.mp4
+logs/
+warehouse_sim_output.*
+
+# Compiled or temp files
+*.egg-info/
+*.egg
+*.pkl
+*.tmp
+*.bak

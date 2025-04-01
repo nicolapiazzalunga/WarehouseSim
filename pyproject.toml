@@ -1,0 +1,31 @@
+# pyproject.toml
+
+[project]
+name = "warehouse-sim"
+version = "0.1.0"
+description = "A modular, multi-agent warehouse simulation platform with pluggable planning strategies."
+authors = [
+  { name = "Your Name", email = "your.email@example.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "imageio",
+  "ffmpeg-python"
+]
+
+[project.scripts]
+warehouse-sim = "warehouse_sim.sim.run:main"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["warehouse_sim"]
+
+[tool.setuptools.package-data]
+"warehouse_sim" = ["*.mp4", "*.gif", "*.log"]
